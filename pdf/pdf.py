@@ -14,6 +14,7 @@ from .utils import _, DummyTranslationService
 loader = ResourceLoader(__name__)
 
 @XBlock.wants('settings')
+@XBlock.wants('completion')
 @XBlock.needs('i18n')
 class PdfBlock(
     ScorableXBlockMixin,
