@@ -3,21 +3,19 @@
 import pkg_resources
 from django.template import Context, Template
 
+from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import Scope, String, Boolean
 from xblock.fragment import Fragment
 from xblockutils.resources import ResourceLoader
 from xblockutils.settings import XBlockWithSettingsMixin, ThemableXBlockMixin
-from xblock.scorable import ScorableXBlockMixin, Score
 from .utils import _, DummyTranslationService
 
 loader = ResourceLoader(__name__)
 
 @XBlock.wants('settings')
-@XBlock.wants('completion')
 @XBlock.needs('i18n')
 class PdfBlock(
-    ScorableXBlockMixin,
     XBlock,
     XBlockWithSettingsMixin,
     ThemableXBlockMixin
@@ -27,6 +25,8 @@ class PdfBlock(
     Icon of the XBlock. Values : [other (default), video, problem]
     '''
     icon_class = "other"
+
+    completion_mode = XBlockCompletionMode.COMPLETABLE
 
     '''
     Fields
@@ -117,7 +117,6 @@ class PdfBlock(
             'source_url': self.source_url,
         }
         self.runtime.publish(self, event_type, event_data)
-        self.runtime.publish(self, 'completion', {'completion': 1.0})
 
         frag = Fragment(html)
         frag.add_javascript(self.load_resource("static/js/pdf_view.js"))
