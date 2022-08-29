@@ -29,6 +29,11 @@ class PdfBlock(
     completion_mode = XBlockCompletionMode.COMPLETABLE
 
     '''
+    Defualt Strings
+    '''
+    UPLOAD_URL = "/assets/{course_id}/?sort=uploadDate&direction=desc&asset_type=Documents&page_size=150"
+
+    '''
     Fields
     '''
     display_name = String(
@@ -128,8 +133,11 @@ class PdfBlock(
         The secondary view of the XBlock, shown to teachers
         when editing the XBlock.
         """
+        upload_url = self.UPLOAD_URL.format(course_id=str(self.course_id))
         context = {
             'display_name': self.display_name,
+            'course_id': self.course_id,
+            'upload_url': upload_url,
             'name_help': _("This name appears in the horizontal navigation at the top of the page."),
             'url': self.url,
             'allow_download': self.allow_download,
@@ -142,6 +150,7 @@ class PdfBlock(
             i18n_service=self.i18n_service,
         )
         frag = Fragment(html)
+        frag.add_css(self.load_resource("static/css/pdf_edit.css"))
         frag.add_javascript(self.load_resource("static/js/pdf_edit.js"))
         frag.initialize_js('pdfXBlockInitEdit')
         return frag
