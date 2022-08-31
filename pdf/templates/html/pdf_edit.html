@@ -18,10 +18,14 @@
         <input class="input setting-input" autoComplete="on" list="suggestions" id="pdf_edit_url" value="{{ url }}" type="text">
         <datalist id="suggestions">
         </datalist>
-        <input class="action-upload" type="file" accept="application/pdf" id="myFile" style="display: none;">
-        <button class="upload-button" onclick="document.getElementById('myFile').click();">{% trans 'Upload PDF' %}</button>
       </div>
       <span class="tip setting-help">{% trans "Add or search the URL or upload the PDF" %}</span>
+      <div class="upload-pdf">
+        <input class="action-upload" type="file" accept="application/pdf" id="myFile" style="display: none;">
+        <button class="upload-button" onclick="document.getElementById('myFile').click();">{% trans 'Upload PDF' %}</button>
+        <progress id="progressBar" value="0" max="100" style="width:300px;" hidden></progress>
+        <h3 id="status"></h3>
+      </div>
     </li>
 
     <li class="field comp-setting-entry is-set">

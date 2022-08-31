@@ -46,30 +46,58 @@ function pdfXBlockInitEdit(runtime, element) {
         });
     });
 
+    function progressHandler(event) {
+        var percent = (event.loaded / event.total) * 100;
+        document.getElementById("progressBar").value = Math.round(percent);
+        document.getElementById("status").innerHTML = Math.round(percent) + "% uploaded. Please wait!";
+    }
+    
+    function completeHandler(event) {
+        document.getElementById("status").innerHTML = "Uploaded Successfully";
+    }
+
+    function abortHandler(event) {
+        document.getElementById("status").innerHTML = "Upload Aborted";
+    }
+
+    function errorHandler(data) {
+        document.getElementById("status").innerHTML = "Upload Failed";
+    }
+
+    function onSuccess(data) {
+        document.getElementById("pdf_edit_url").value = data.asset.portable_url;
+        $('#suggestions').append($('<option>', { 
+            value: data.asset.portable_url.portable_url,
+            text : data.asset.portable_url.display_name 
+        }));
+    }
+
     $(element).find('.action-upload').on('change', function (event) {
         const file = event.target.files[0];
         const formData = new FormData();
         formData.set('file', file);
 
         const upload_url = $('#upload_url').val()
-
-        var req = jQuery.ajax({
+        
+        $('#progressBar').removeAttr('hidden');
+        $('#progressBar').attr('value', 0);
+        
+        $.ajax({
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", progressHandler, false);
+                xhr.addEventListener("load", completeHandler, false);
+                xhr.addEventListener("abort", abortHandler, false);
+                return xhr;
+            },
             url: upload_url,
             method: 'POST',
             data: formData,
             processData: false,
-            contentType: false
+            contentType: false,
+            success: onSuccess,
+            error: errorHandler,
         });
-
-        req.then(function(response) {
-            document.getElementById("pdf_edit_url").value = response.asset.portable_url;
-            $('#suggestions').append($('<option>', { 
-                value: response.asset.portable_url.portable_url,
-                text : response.asset.portable_url.display_name 
-            }));
-        }, function(error) {
-            console.error('faild to upload pdf', error)
-        })
     });
 
     local_pdf_assets();
