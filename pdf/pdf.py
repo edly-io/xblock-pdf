@@ -45,7 +45,7 @@ class PdfBlock(
 
     url = String(
         display_name=_("PDF URL"),
-        default=_("http://tutorial.math.lamar.edu/pdf/Trig_Cheat_Sheet.pdf"),
+        default=_("https://tutorial.math.lamar.edu/pdf/Trig_Cheat_Sheet.pdf"),
         scope=Scope.content,
         help=_("The URL for your PDF.")
     )
